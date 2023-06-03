@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+{% load mediapath %}
+
+{% block content %}
+<section class="py-5 text-center container" xmlns="http://www.w3.org/1999/html">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1>Отзывы на товар: {{ product.name }} {{ product.description }}</h1>
+        </div>
+    </div>
+</section>
+
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% if reviews %}
+            {% for object in reviews %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        {% if object.preview %}
+                        <img src="{{ object.image|mediapath }}"/>
+                        {% else %}
+                        <img src="/media/product_images/product.noimage.png"/>
+                        {% endif %}
+                        <p class="card-text">Загаловок: {{ object.title }}</p>
+                        <p class="card-text">Автор: {{ object.author }}</p>
+                        <p class="card-text">Отзыв: {{ object.content }} </p>
+                        <p>Просмотры: {{ object.views_count }}</p>
+                        <div class="block"><a href="{% url 'main:review_detail' pk=object.pk %}"
+                                                  class="btn btn-outline-primary">Просмотр отзыва</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>Отзывов на данный товар пока нет.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

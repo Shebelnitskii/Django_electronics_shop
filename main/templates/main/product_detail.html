@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+{% load mediapath %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+            <p>{{ product.name }}</p>
+            <p>{{ product.description }}</p>
+            {% if object.image %}
+            <img src="{{ object.image|mediapath }}"/>
+            {% else %}
+            <img src="/media/product_images/product.noimage.png"/>
+            {% endif %}
+            <p>Цена: {{ product.price }} руб.</p>
+            <p>Категория: {{ product.category }}</p>
+            <p>Создано: {{ product.created_at }}</p>
+    </div>
+</div>
+{% endblock %}

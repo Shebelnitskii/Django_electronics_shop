@@ -23,3 +23,18 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name}\n{self.description}'
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, related_name='reviews',on_delete=models.CASCADE)
+    author = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    content = models.TextField()
+    preview = models.ImageField(upload_to='review_images', **NULLABLE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=False)
+    rating = models.IntegerField()
+    views_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title
