@@ -4,8 +4,17 @@
 {% block content %}
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
-        <h1>Отзыв: {{ reviews.author }}</h1>
+        <h1>Автор: {{ reviews.author }}</h1>
     </div>
 </div>
-
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+        <img src="{{ reviews.preview|mediapath }}"/>
+        <p>Отзыв: {{ reviews.content }}</p>
+        <p>Создано: {{ reviews.created_at }}</p>
+        <div class="block">
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-info">Вернуться</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

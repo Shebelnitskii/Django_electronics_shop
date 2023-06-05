@@ -1,6 +1,9 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime
+
+from django.utils.text import slugify
 
 NULLABLE = {'blank': True, 'null': True}
 # Create your models here.
@@ -24,17 +27,32 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.name}\n{self.description}'
 
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[str(self.id)])
+
 class Review(models.Model):
-    product = models.ForeignKey(Product, related_name='reviews',on_delete=models.CASCADE)
-    author = models.CharField(max_length=100)
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
-    content = models.TextField()
-    preview = models.ImageField(upload_to='review_images', **NULLABLE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    author = models.CharField(max_length=100, verbose_name='Автор')
+    title = models.CharField(max_length=100, verbose_name='Заголовок')
+    slug = models.CharField(max_length=100, unique=True, blank=True)
+    content = models.TextField(verbose_name='Отзыв')
+    preview = models.ImageField(upload_to='review_images', verbose_name='Фото', **NULLABLE)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_published = models.BooleanField(default=False)
-    rating = models.IntegerField()
+    is_published = models.BooleanField(default=True)
+    rating = models.IntegerField(default=0)
     views_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            suffix = 1
+            self.slug = base_slug
+
+            while Review.objects.filter(slug=self.slug).exists():
+                self.slug = f'{base_slug}_{suffix}'
+                suffix += 1
+
+        super().save(*args, **kwargs)

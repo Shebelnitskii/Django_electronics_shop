@@ -8,7 +8,12 @@
             <h1>Отзывы на товар: {{ product.name }} {{ product.description }}</h1>
         </div>
     </div>
+
+    <a href='/product_list/' class="btn btn-info">Вернуться</a>
+
+    <a href="{% url 'main:review_create' pk=product.pk %}" class="btn btn-primary"> Добавить отзыв </a>
 </section>
+
 
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
@@ -19,7 +24,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         {% if object.preview %}
-                        <img src="{{ object.image|mediapath }}"/>
+                        <img src="{{ object.preview|mediapath }}" style="max-width: 385px; max-height: 385px;"/>
                         {% else %}
                         <img src="/media/product_images/product.noimage.png"/>
                         {% endif %}
@@ -28,16 +33,23 @@
                         <p class="card-text">Отзыв: {{ object.content }} </p>
                         <p>Просмотры: {{ object.views_count }}</p>
                         <div class="block"><a href="{% url 'main:review_detail' pk=object.pk %}"
-                                                  class="btn btn-outline-primary">Просмотр отзыва</a></p>
+                                              class="btn btn-outline-primary">Просмотр отзыва</a>
+                            <a href="{% url 'main:review_update' pk=object.pk %}"
+                               class="btn btn-warning">Изменить</a>
+                            <a href="{% url 'main:review_delete' pk=object.pk %}"
+                               class="btn btn-danger">Удалить</a></p>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <p>Отзывов на данный товар пока нет.</p>
-        {% endif %}
-    </div>
-</div>
 
-{% endblock %}
+                </div>
+
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="container"><p>Отзывов на данный товар пока нет.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endblock %}

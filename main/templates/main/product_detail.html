@@ -3,16 +3,15 @@
 {% block content %}
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
-            <p>{{ product.name }}</p>
-            <p>{{ product.description }}</p>
-            {% if object.image %}
+            <p>{{ product.name }} {{ product.description }}</p>
             <img src="{{ object.image|mediapath }}"/>
-            {% else %}
-            <img src="/media/product_images/product.noimage.png"/>
-            {% endif %}
             <p>Цена: {{ product.price }} руб.</p>
             <p>Категория: {{ product.category }}</p>
             <p>Создано: {{ product.created_at }}</p>
+        <div class="block">
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-info">Вернуться</a>
+                </div>
     </div>
+
 </div>
 {% endblock %}

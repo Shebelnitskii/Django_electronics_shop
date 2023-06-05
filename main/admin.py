@@ -19,8 +19,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Product, ProductAdmin)
 
+
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['id', 'author', 'product', 'rating', 'views_count', 'created_at']
-    list_filter = ('product', 'views_count',)
+    list_display = ['id', 'author', 'product', 'slug', 'rating', 'views_count', 'created_at']
+    list_filter = ('product', 'views_count', 'is_published',)
+    fields = ['author', 'title', 'content', 'preview']
+
 
 admin.site.register(Review, ReviewAdmin)
