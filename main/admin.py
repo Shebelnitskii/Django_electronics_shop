@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Review
+from .models import Category, Product, Review, Version
 
 
 # Register your models here.
@@ -27,3 +27,10 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Review, ReviewAdmin)
+
+class VersionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'version_number', 'version_name', 'is_current')
+    list_filter = ('product', 'version_number', 'version_name', 'is_current')
+    fields = ['product', 'version_number', 'version_name', 'is_current']
+
+admin.site.register(Version, VersionAdmin)

@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
+from .forms import ProductForm
 
-from main.models import Product, Category, Review
+from main.models import Product, Category, Review, Version
 
 
 class ProductDetailView(generic.DetailView):
@@ -16,12 +17,40 @@ class ProductDetailView(generic.DetailView):
         return context
 
 
-class ProductListView(generic.View):
-    def get(self, request):
-        products = Product.objects.all()
-        context = {'products': products, 'title': 'Товары'}
-        return render(request, 'main/product_list.html', context)
+class ProductListView(generic.ListView):
+    model = Product
+    template_name = 'main/product_list.html'
+    context_object_name = 'products'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        versions = Version.objects.filter(product__in=context['products'], is_current=True)
+        context['versions'] = versions
+        return context
+
+
+class ProductCreateView(generic.CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'main/product_form.html'
+
+    def get_success_url(self):
+        return reverse('main:product_list')
+
+class ProductUpdateView(generic.UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'main/product_form.html'
+
+    def get_success_url(self):
+        return reverse('main:product_list')
+
+class ProductDeleteView(generic.DeleteView):
+    model = Product
+    template_name = 'main/product_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse('main:product_list')
 
 class CategoryListView(generic.ListView):
     model = Category

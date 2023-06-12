@@ -10,10 +10,14 @@
         </div>
     </div>
 </section>
-
-<div class="album py-5 bg-body-tertiary" style="display: flex; justify-content: center;" >
-    <div class="container" >
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" >
+<div class="album py-5 bg-body-tertiary" style="justify-content: center;">
+    <div class="container">
+        <a href="{% url 'main:product_create' %}" class="btn btn-primary"> Добавить товар </a>
+    </div>
+</div>
+<div class="album py-5 bg-body-tertiary" style="display: flex; justify-content: center;">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for object in products %}
             <div class="col">
                 <div class="card shadow-sm">
@@ -22,9 +26,16 @@
                         <p class="card-text">{{ object.name }} {{ object.description }}</p>
                         <p class="card-text">{{ object.category }}</p>
                         <p class="card-text">{{ object.price }} руб.</p>
+                        {% for version in versions %}
+                        {% if version.product == object and version.is_current %}
+                        <p class="card-text">Активная версия: {{ version.version_number }} {{ version.version_name }}</p>
+                        {% endif %}
+                        {% endfor %}
                         <div class="d-flex justify-content-between align-items-center">
                             <p><a href="{% url 'main:product_detail' pk=object.pk %}" class="btn btn-outline-primary">Подробнее
                                 ≫</a>
+                                <a href="{% url 'main:product_update' pk=object.pk %}" class="btn btn-primary">Изменить
+                                    ≫</a>
                             <div class="block"><a href="{% url 'main:product_reviews' pk=object.pk %}"
                                                   class="btn btn-link">Отзывы</a></p>
                             </div>

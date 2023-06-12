@@ -30,6 +30,16 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
 
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    version_number = models.CharField(max_length=100)
+    version_name = models.CharField(max_length=100)
+    is_current = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.product} - {self.version_name}"
+
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     author = models.CharField(max_length=100, verbose_name='Автор')

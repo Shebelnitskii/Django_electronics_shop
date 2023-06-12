@@ -6,6 +6,9 @@ from main.views import (
     ReviewDetailView,
     ReviewUpdateView,
     ReviewDeleteView,
+    ProductCreateView,
+    ProductUpdateView,
+    ProductDeleteView
 )
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -18,5 +21,9 @@ urlpatterns = [
     path('review_form/<int:pk>/delete/', ReviewDeleteView.as_view(), name='review_delete'),
     path('product_list/', ProductListView.as_view(), name='product_list'),
     path('product_detail/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('category_list/', CategoryListView.as_view(), name='category_list'),
+    path('product_form/', ProductCreateView.as_view(), name='product_create'),
+    path('product_form/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
+    path('product_form/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
     path('', CategoryListView.as_view(), name='category_list')
 ] + staticfiles_urlpatterns()
