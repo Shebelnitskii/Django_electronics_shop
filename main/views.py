@@ -1,7 +1,8 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
-from .forms import ProductForm
+from .forms import ProductForm, VersionForm
 
 from main.models import Product, Category, Review, Version
 
@@ -34,6 +35,23 @@ class ProductCreateView(generic.CreateView):
     form_class = ProductForm
     template_name = 'main/product_form.html'
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormSet = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormSet(self.request.POST)
+        else:
+            context_data['formset'] = VersionFormSet()
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse('main:product_list')
 
@@ -41,6 +59,28 @@ class ProductUpdateView(generic.UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'main/product_form.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormSet = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormSet(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormSet(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        else:
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+
+
 
     def get_success_url(self):
         return reverse('main:product_list')
