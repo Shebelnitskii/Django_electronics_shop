@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'main',
+    'users',
     'crispy_forms',
 ]
 
@@ -78,12 +79,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'homework_20.1', # Название БД
-        'USER': 'postgres', # Пользователь для подключения
-        'PASSWORD': 'secret', # Пароль для этого пользователя
-        'HOST': '127.0.0.1', # Адрес, на котором развернут сервер БД
-        'PORT': 5432, # Порт, на котором работает сервер БД
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'homework_20.1',
+        'USER': 'postgres',
+        'PASSWORD': '1346',
+        'HOST': '127.0.0.1',
+        'PORT': 5432,
     }
 }
 
@@ -136,3 +137,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
