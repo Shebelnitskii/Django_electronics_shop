@@ -5,6 +5,8 @@ from datetime import datetime
 
 from django.utils.text import slugify
 
+from config import settings
+
 NULLABLE = {'blank': True, 'null': True}
 # Create your models here.
 
@@ -23,6 +25,8 @@ class Product(models.Model):
     price = models.CharField(max_length=100, verbose_name='Цена')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Создатель')
 
     def __str__(self):
         return f'{self.name}\n{self.description}'

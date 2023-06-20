@@ -12,7 +12,9 @@
 </section>
 <div class="album py-5 bg-body-tertiary" style="justify-content: center;">
     <div class="container">
-        <a href="{% url 'main:product_create' %}" class="btn btn-primary"> Добавить товар </a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'main:product_create' %}" class="btn btn-primary"> Добавить товар </a>
+        {% endif %}
     </div>
 </div>
 <div class="album py-5 bg-body-tertiary" style="display: flex; justify-content: center;">
@@ -26,6 +28,7 @@
                         <p class="card-text">{{ object.name }} {{ object.description }}</p>
                         <p class="card-text">{{ object.category }}</p>
                         <p class="card-text">{{ object.price }} руб.</p>
+                        <p class="card-text">Добавлено {{ object.owner|default:"администрацией" }}</p>
                         {% for version in versions %}
                         {% if version.product == object and version.is_current %}
                         <p class="card-text">Активная версия: {{ version.version_number }} {{ version.version_name }}</p>
@@ -34,8 +37,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <p><a href="{% url 'main:product_detail' pk=object.pk %}" class="btn btn-outline-primary">Подробнее
                                 ≫</a>
-                                <a href="{% url 'main:product_update' pk=object.pk %}" class="btn btn-primary">Изменить
-                                    ≫</a>
+                                {% if user.is_authenticated %}
+                                <a href="{% url 'main:product_update' pk=object.pk %}" class="btn btn-primary">Изменить ≫</a>
+                                {% endif %}
                             <div class="block"><a href="{% url 'main:product_reviews' pk=object.pk %}"
                                                   class="btn btn-link">Отзывы</a></p>
                             </div>
