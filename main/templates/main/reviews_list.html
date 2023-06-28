@@ -25,7 +25,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         {% if object.preview %}
-                        <img src="{{ object.preview|mediapath }}" style="max-width: 385px; max-height: 385px;"/>
+                        <img src="{{ object.preview|mediapath:object.is_published }}" style="max-width: 385px; max-height: 385px;"/>
                         {% else %}
                         <img src="/media/product_images/product.noimage.png"/>
                         {% endif %}

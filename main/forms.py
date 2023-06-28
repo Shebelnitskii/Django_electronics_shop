@@ -1,10 +1,17 @@
 from django import forms
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import get_object_or_404
+
 from .models import Product, Version
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ['owner']
+        exclude = ['owner', 'is_published']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -21,6 +28,8 @@ class ProductForm(forms.ModelForm):
             if word.lower() in description.lower():
                 raise forms.ValidationError("Недопустимое слово в описании продукта.")
         return description
+
+
 
 class VersionForm(forms.ModelForm):
     class Meta:

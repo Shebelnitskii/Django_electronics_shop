@@ -25,6 +25,7 @@ class Product(models.Model):
     price = models.CharField(max_length=100, verbose_name='Цена')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=False, verbose_name='Опубликован')
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Создатель')
 
@@ -33,6 +34,8 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
+
+
 
 
 class Version(models.Model):
@@ -70,3 +73,4 @@ class Review(models.Model):
                 suffix += 1
 
         super().save(*args, **kwargs)
+

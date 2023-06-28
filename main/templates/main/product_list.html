@@ -13,7 +13,7 @@
 <div class="album py-5 bg-body-tertiary" style="justify-content: center;">
     <div class="container">
         {% if user.is_authenticated %}
-            <a href="{% url 'main:product_create' %}" class="btn btn-primary"> Добавить товар </a>
+        <a href="{% url 'main:product_create' %}" class="btn btn-primary"> Добавить товар </a>
         {% endif %}
     </div>
 </div>
@@ -21,36 +21,56 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for object in products %}
+            {% if object.is_published or object.owner == user%}
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <img src="{{ object.image|mediapath }}" style="max-width: 300px; max-height: 300px;"/>
+                        {% if object.is_published == False %}
+                        <img src="{{ object.image|mediapath:object.is_published }}"
+                             style="max-width: 380px; max-height: 300px;"/>
+                        <p class="card-text">{{ object.name }} {{ object.description }} на модерации!</p>
+                        <p class="card-text">{{ object.price }} руб.</p>
+                        <p class="card-text">Добавлено {{ object.owner|default:"администрацией" }}</p>
+                        {% else %}
+                        <img src="{{ object.image|mediapath:object.is_published }}"
+                             style="max-width: 300px; max-height: 300px;"/>
                         <p class="card-text">{{ object.name }} {{ object.description }}</p>
                         <p class="card-text">{{ object.category }}</p>
                         <p class="card-text">{{ object.price }} руб.</p>
                         <p class="card-text">Добавлено {{ object.owner|default:"администрацией" }}</p>
+                        {% endif %}
                         {% for version in versions %}
                         {% if version.product == object and version.is_current %}
-                        <p class="card-text">Активная версия: {{ version.version_number }} {{ version.version_name }}</p>
+                        <p class="card-text">Активная версия: {{ version.version_number }} {{ version.version_name
+                            }}</p>
                         {% endif %}
                         {% endfor %}
                         <div class="d-flex justify-content-between align-items-center">
-                            <p><a href="{% url 'main:product_detail' pk=object.pk %}" class="btn btn-outline-primary">Подробнее
-                                ≫</a>
-                                {% if user.is_authenticated %}
-                                <a href="{% url 'main:product_update' pk=object.pk %}" class="btn btn-primary">Изменить ≫</a>
+                            <div class="btn-group">
+                                <a href="{% url 'main:product_detail' pk=object.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                                {% if object.owner == user %}
+                                <a href="{% url 'main:product_update' pk=object.pk %}"
+                                   class="btn btn-primary">Изменить</a>
                                 {% endif %}
-                            <div class="block"><a href="{% url 'main:product_reviews' pk=object.pk %}"
-                                                  class="btn btn-link">Отзывы</a></p>
+                                <a href="{% url 'main:product_reviews' pk=object.pk %}"
+                                   class="btn btn-outline-primary">Отзывы</a>
                             </div>
                         </div>
+                        <p></p>
+                        {% if object.is_published == False and perms.main.change_product %}
+                                <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-warning">Опубликовать</a>
+                                {% else %}
+                                <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-danger">Снять с публикации</a>
+                                {% endif %}
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-body-secondary">Добавлено: {{ object.created_at }}</small>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

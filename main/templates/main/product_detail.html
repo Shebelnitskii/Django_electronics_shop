@@ -4,15 +4,16 @@
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
         <p>{{ product.name }} {{ product.description }}</p>
-        <img src="{{ object.image|mediapath }}"/>
+        <img src="{{ object.image|mediapath:object.is_published }}"/>
         <p>Цена: {{ product.price }} руб.</p>
         <p>Категория: {{ product.category }}</p>
         <p>Создано: {{ product.created_at }}</p>
         <div class="block">
             <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-info">Вернуться</a>
-            {% if user.is_authenticated %}
+            {% if perms.main.change_product or object.owner == user %}
             <a href="{% url 'main:product_delete' pk=product.pk %}"
                class="btn btn-danger">Удалить</a></p>
+
             {% endif %}
         </div>
     </div>

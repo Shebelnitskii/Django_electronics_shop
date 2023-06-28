@@ -1,3 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -62,7 +66,7 @@ class ProductCreateView(generic.CreateView):
     def get_success_url(self):
         return reverse('main:product_list')
 
-class ProductUpdateView(generic.UpdateView):
+class ProductUpdateView(UserPassesTestMixin, generic.UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'main/product_form.html'
@@ -86,15 +90,31 @@ class ProductUpdateView(generic.UpdateView):
             return self.form_invalid(form)
         return super().form_valid(form)
 
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or (user.is_staff and user.is_authenticated)
 
+    def handle_no_permission(self):
+        if self.raise_exception or self.request.user.is_authenticated:
+            raise PermissionDenied(self.get_permission_denied_message())
+        return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
 
+class ProductPublishView(generic.View):
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if request.user.is_staff and product.is_published == False:
+            product.is_published = True
+            product.save()
+        else:
+            product.is_published = False
+            product.save()
+        return redirect('main:product_list')
 
-    def get_success_url(self):
-        return reverse('main:product_list')
-
-class ProductDeleteView(generic.DeleteView):
+class ProductDeleteView(PermissionRequiredMixin, generic.DeleteView):
     model = Product
     template_name = 'main/product_confirm_delete.html'
+    permission_required = 'main.delete_product'
 
     def get_success_url(self):
         return reverse('main:product_list')

@@ -23,3 +23,4 @@ class EmailVerification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=64, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
+

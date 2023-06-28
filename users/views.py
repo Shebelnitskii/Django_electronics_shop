@@ -49,7 +49,7 @@ class EmailVerificationView(View):
             user.is_active = True  # Активируем пользователя
             user.save()
             email_verification.delete()  # Удаляем объект EmailVerification
-            return redirect('users:login')  # Редирект на страницу входа
+            return redirect(reverse('users:verify_email'))  # Редирект на страницу входа
         except EmailVerification.DoesNotExist:
             return HttpResponse('Ошибка верификации')  # Отображаем сообщение об ошибке
 

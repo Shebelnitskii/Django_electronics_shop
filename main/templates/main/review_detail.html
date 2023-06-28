@@ -9,7 +9,7 @@
 </div>
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
-        <img src="{{ reviews.preview|mediapath }}"/>
+        <img src="{{ reviews.preview|mediapath:reviews.is_published }}"/>
         <p>Отзыв: {{ reviews.content }}</p>
         <p>Создано: {{ reviews.created_at }}</p>
         <div class="block">
