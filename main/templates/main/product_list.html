@@ -48,7 +48,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a href="{% url 'main:product_detail' pk=object.pk %}" class="btn btn-outline-primary">Подробнее</a>
-                                {% if object.owner == user %}
+                                {% if object.owner == user or perms.main.change_product %}
                                 <a href="{% url 'main:product_update' pk=object.pk %}"
                                    class="btn btn-primary">Изменить</a>
                                 {% endif %}

@@ -5,7 +5,14 @@
 <div class="container mt-3" style="width: 95%; font_size: 14px">
     <form method="post" enctype="multipart/form-data" class="card p-3 mt-5" autocomplete="off">
         {% csrf_token %}
+        {% if view.is_moderator %}
+        <p>Описание:</p>
+        {{ form.description }}
+        <p>Категория:</p>
+        {{ form.category }}
+        {% else %}
         {{ form }}
+        {% endif %}
         <button type="submit" class="btn btn-primary mt-3">{% if object %}Сохранить изменения{% else %}Создать продукт{% endif %}
         </button>
         <a class="btn btn-info mt-3" href="{{ request.META.HTTP_REFERER }}">Вернуться</a>

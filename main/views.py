@@ -90,10 +90,13 @@ class ProductUpdateView(UserPassesTestMixin, generic.UpdateView):
             return self.form_invalid(form)
         return super().form_valid(form)
 
+    def is_moderator(self):
+        return self.request.user.groups.filter(name='manager').exists()
+
     def test_func(self):
         product = self.get_object()
         user = self.request.user
-        return user == product.owner or (user.is_staff and user.is_authenticated)
+        return user == product.owner or (self.is_moderator() and user.is_authenticated)
 
     def handle_no_permission(self):
         if self.raise_exception or self.request.user.is_authenticated:
