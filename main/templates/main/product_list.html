@@ -21,7 +21,7 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for object in products %}
-            {% if object.is_published or object.owner == user%}
+            {% if object.is_published or object.owner == user or perms.main.change_product %}
             <div class="col">
                 <div class="card shadow-sm">
                     <div class="card-body">
@@ -57,11 +57,11 @@
                             </div>
                         </div>
                         <p></p>
-                        {% if object.is_published == False and perms.main.change_product %}
-                                <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-warning">Опубликовать</a>
-                                {% else %}
-                                <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-danger">Снять с публикации</a>
-                                {% endif %}
+                        {% if object.is_published == False and user.is_authenticated and perms.main.change_product %}
+                        <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-warning">Опубликовать</a>
+                        {% elif object.is_published == True and user.is_authenticated and perms.main.change_product %}
+                        <a href="{% url 'main:product_publish' pk=object.pk %}" class="btn btn-danger">Снять с публикации</a>
+                        {% endif %}
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-body-secondary">Добавлено: {{ object.created_at }}</small>
                         </div>
