@@ -6,6 +6,8 @@ from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
+from django.views.decorators.cache import cache_page
+
 from .forms import ProductForm, VersionForm
 
 from main.models import Product, Category, Review, Version
@@ -19,7 +21,7 @@ class ProductDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = f"{self.object.name} {self.object.description}"
+        context['title'] = f"О товаре: {self.object.name} {self.object.description}"
         return context
 
 
@@ -27,18 +29,31 @@ class ProductListView(generic.ListView):
     model = Product
     template_name = 'main/product_list.html'
     context_object_name = 'products'
+    extra_context = {'title': 'Товары'}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         versions = Version.objects.filter(product__in=context['products'], is_current=True)
         context['versions'] = versions
-        return context
 
+        # Получаем выбранную категорию из параметров запроса
+        category_id = self.request.GET.get('category')
+
+        if category_id:
+            # Получаем объект выбранной категории
+            category = get_object_or_404(Category, id=category_id)
+            # Фильтруем товары по выбранной категории
+            products = context['products'].filter(category=category)
+            context['selected_category'] = category
+            context['products'] = products
+
+        return context
 
 class ProductCreateView(generic.CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'main/product_form.html'
+    extra_context = {'title': 'Добавить товар'}
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -70,6 +85,7 @@ class ProductUpdateView(UserPassesTestMixin, generic.UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'main/product_form.html'
+    extra_context = {'title': 'Обновить товар'}
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -118,6 +134,8 @@ class ProductDeleteView(PermissionRequiredMixin, generic.DeleteView):
     model = Product
     template_name = 'main/product_confirm_delete.html'
     permission_required = 'main.delete_product'
+    extra_context = {'title': 'Подтвердить удаление'}
+
 
     def get_success_url(self):
         return reverse('main:product_list')

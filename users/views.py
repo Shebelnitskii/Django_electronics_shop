@@ -19,6 +19,7 @@ class RegisterView(CreateView):
     form_class = UserRegisterForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
+    extra_context = {'title': 'Регистрация'}
 
     def form_valid(self, form):
         recipient_email = form.save()
@@ -57,6 +58,7 @@ class ProfileView(UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('users:profile')
+    extra_context = {'title': 'Профиль'}
 
     def get_object(self, queryset=None):
         return self.request.user
