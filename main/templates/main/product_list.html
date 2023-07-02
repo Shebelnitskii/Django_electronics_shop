@@ -26,14 +26,18 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         {% if object.is_published == False %}
+                        <div class="container" style="display: flex; justify-content: center;">
                         <img src="{{ object.image|mediapath:object.is_published }}"
                              style="max-width: 380px; max-height: 300px;"/>
+                        </div>
                         <p class="card-text">{{ object.name }} {{ object.description }} на модерации!</p>
                         <p class="card-text">{{ object.price }} руб.</p>
                         <p class="card-text">Добавлено {{ object.owner|default:"администрацией" }}</p>
                         {% else %}
+                        <div class="container" style="display: flex; justify-content: center;">
                         <img src="{{ object.image|mediapath:object.is_published }}"
                              style="max-width: 300px; max-height: 300px;"/>
+                        </div>
                         <p class="card-text">{{ object.name }} {{ object.description }}</p>
                         <p class="card-text">{{ object.category }}</p>
                         <p class="card-text">{{ object.price }} руб.</p>

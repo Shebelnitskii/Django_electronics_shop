@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.decorators.cache import cache_page
 
@@ -145,6 +146,10 @@ class CategoryListView(generic.ListView):
     template_name = 'main/category_list.html'
     context_object_name = 'object_list'
     extra_context = {'title': 'Категории'}
+
+    @method_decorator(cache_page(60 * 15))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class ProductReviewListView(generic.ListView):

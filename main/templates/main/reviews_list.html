@@ -25,9 +25,14 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         {% if object.preview %}
-                        <img src="{{ object.preview|mediapath:object.is_published }}" style="max-width: 385px; max-height: 385px;"/>
+                        <div class="container" style="display: flex; justify-content: center;">
+                            <img src="{{ object.preview|mediapath:object.is_published }}"
+                                 style="max-width: 385px; max-height: 385px;"/>
+                        </div>
                         {% else %}
-                        <img src="/media/product_images/product.noimage.png"/>
+                        <div class="container" style="display: flex; justify-content: center;">
+                            <img src="/media/product_images/product.noimage.png"/>
+                        </div>
                         {% endif %}
                         <p class="card-text">Загаловок: {{ object.title }}</p>
                         <p class="card-text">Автор: {{ object.author }}</p>
