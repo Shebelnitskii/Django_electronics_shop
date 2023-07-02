@@ -4,7 +4,9 @@
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
         <p>{{ product.name }} {{ product.description }}</p>
+        <div class="container" style="display: flex; justify-content: center;">
         <img src="{{ object.image|mediapath:object.is_published }}"/>
+        </div>
         <p>Цена: {{ product.price }} руб.</p>
         <p>Категория: {{ product.category }}</p>
         <p>Создано: {{ product.created_at }}</p>
